@@ -12,6 +12,7 @@ output reg meanStable, reg busy, [23:0] meanOut, [9:0] distance
 	
 	reg [2:0] state;
 	reg [23:0] pixel, mean, meanOld, [9:0] dist, [11:0] counter;
+	/// acc should be 20 bit  not 8
 	reg [7:0] redAcc, blueAcc, greenAcc;
 	
 	localparam sleep      = 3'b000,
