@@ -1,7 +1,8 @@
 /// can be pipleined to improve propagation
-module cluster_thread(input clk,reset,group,input [23:0] pixelIn, output  [71:0] accumolator ,output reg [11:0] counter);
+module cluster_thread(input clk,reset,group, [23:0] pixelIn, output reg [71:0] accumolator ,[11:0] counter);
     reg [23:0] redAcc, greenAcc, blueAcc;
-    //reg [11:0] counter;
+    reg [11:0] counter;
+
     assign  accumolator = {redAcc, greenAcc, blueAcc};
 
     always @(posedge clk,posedge reset) begin

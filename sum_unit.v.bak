@@ -1,0 +1,51 @@
+module sum_unit#(parameter C=0,SizeOfAcc=24,SizeOfCount=12,NumOfEngines=2)(
+    input clk,
+    input [NumOfEngines * SizeOfAcc * 16 * 3 - 1 : 0] ac,
+    input [NumOfEngines * SizeOfCount * 16 - 1 : 0] co,
+    
+    output [SizeOfAcc + NumOfEngines - 1 : 0] red_sum;
+    output [SizeOfAcc + NumOfEngines - 1 : 0] green_sum;
+    output [SizeOfAcc + NumOfEngines - 1 : 0] blue_sum;
+    output [SizeOfCount + NumOfEngines - 1 : 0] co_sum;
+
+);
+
+genvar i, j;
+
+reg [SizeOfAcc + NumOfEngines- 1 : 0] red_pipeline [2*NumOfEngines - 1 : 0];   // Pipeline array
+reg [SizeOfAcc + NumOfEngines- 1 : 0] green_pipeline [2*NumOfEngines - 1 : 0];   // Pipeline array
+reg [SizeOfAcc + NumOfEngines- 1 : 0] blue_pipeline [2*NumOfEngines - 1 : 0];   // Pipeline array
+reg [SizeOfCount + NumOfEngines- 1 : 0] counter_pipeline [2*NumOfEngines - 1 : 0];   // Pipeline array
+
+
+assign sum = pipeline[1];
+assign done = NumOfEngines/2 == stage;
+// Pack flat terms
+// Pack flat terms
+reg stage[$clog(NumOfEngines)+1:0] = 0;
+generate
+    for (i = 2*NumOfEngines; i <= NumOfEngines ; i = i - 1) begin
+        always @ (posedge clk) begin
+            red_pipeline[i-1] <= ac[i*72+48 +: 24];
+            green_pipeline[i-1] <= ac[i*72+24 +: 24];
+            blue_pipeline[i-1] <= ac[i*72+0 +: 24];
+            counter_pipeline[i-1] <= ac[i*12 +: 12];
+        end
+    end
+endgenerate
+
+// Add terms logarithmically
+generate
+
+for (i = 1; i < NumOfEngines; i = i + 1) begin
+    always @ (posedge clk) begin
+        pipeline[i] <= pipeline[i*2] + pipeline[i*2 + 1];
+        end
+    end
+endgenerate
+
+always @ (posedge clk) begin
+    stage <= stage +1;
+    end
+
+endmodule

@@ -1,0 +1,110 @@
+module distance_comparator(input d[15:0],en[15:0] ,output [3:0] closestCore);
+    
+    wire  A0,A1,A2,A3,A4,A5,A6,A7,B0,B1,B2,B3,C0,C1,D0;
+    wire [16:0] DA01,DA23,DA45,DA67,DA89,DA1011,DA1213,DA1415,DB0,DB1,DB2,DB3,DC0,DC1;
+
+    assign A0 = {~en[0], d[0] } <=  {~en[1]  ,d[1] };
+    assign A1 = {~en[2], d[2] } <=  {~en[3]  ,d[3] };
+    assign A2 = {~en[4], d[4] } <=  {~en[5]  ,d[5] };
+    assign A3 = {~en[6], d[6] } <=  {~en[7]  ,d[7] };
+    assign A4 = {~en[8], d[8] } <=  {~en[9]  ,d[9] };
+    assign A5 = {~en[10],d[10]} <=  {~en[11] ,d[11]};
+    assign A6 = {~en[12],d[12]} <=  {~en[13] ,d[13]};
+    assign A7 = {~en[14],d[14]} <=  {~en[15] ,d[15]};
+    
+    assign DA01   = A0 ? d0  : d1;
+    assign DA23   = A1 ? d2  : d3;
+    assign DA45   = A2 ? d4  : d5;
+    assign DA67   = A3 ? d6  : d7;
+    assign DA89   = A4 ? d8  : d9;
+    assign DA1011 = A5 ? d10 : d11;
+    assign DA1213 = A6 ? d12 : d13;
+    assign DA1415 = A7 ? d14 : d15;
+    
+    
+    assign B0 = DA01   <= DA23;
+    assign B1 = DA45   <= DA67;
+    assign B2 = DA89   <= DA1011;
+    assign B3 = DA1213 <= DA1415;
+    
+    assign DB0 = B0 ? DA01  : DA23;
+    assign DB1 = B1 ? DA01  : DA23;
+    assign DB2 = B2 ? DA45  : DA67;
+    assign DB3 = B3 ? DA89  : DA1011;
+    
+
+    assign C0 = DB0 <= DB1;
+    assign C1 = DB2 <= DB3;
+
+    assign DC0 = C0 ? DB0 : DB1;
+    assign DC1 = C1 ? DB2 : DB3;
+
+    assign D0 = DC0 <= DC1;
+
+
+    always @* begin
+        case(D0)
+        1'b1 :
+            case(C0)
+            1'b1:
+                case(B0)
+                1'b1:
+                    case(A0):
+                    1'b1: closestCore = 4'b0000;
+                    1'b0: closestCore = 4'b0001;
+                1'b0: /* Not B0*/
+                    case(A1):
+                    1'b1: closestCore = 4'b0010;
+                    1'b0: closestCore = 4'b0011;
+            1'b0: /* Not C0*/
+                case(B1)
+                1'b1:
+                    case(A2)
+                    1'b1: closestCore = 4'b0100;
+                    1'b0: closestCore = 4'b0101;
+                1'b0: /* Not B1*/
+                    case(A3)
+                    1'b1: closestCore = 4'b0110;
+                    1'b0: closestCore = 4'b0111;       
+        1'b0 :
+            case(C1)
+            1'b1:
+                case(B2)
+                1'b1:
+                    case(A4):
+                    1'b1: closestCore = 4'b1000;
+                    1'b0: closestCore = 4'b1001;
+                1'b0: /* Not B0*/
+                    case(A5):
+                    1'b1: closestCore = 4'b1010;
+                    1'b0: closestCore = 4'b1011;
+            1'b0: /* Not C0*/
+                case(B3)
+                1'b1:
+                    case(A6)
+                    1'b1: closestCore = 4'b1100;
+                    1'b0: closestCore = 4'b1101;
+                1'b0: /* Not B1*/
+                    case(A7)
+                    1'b1: closestCore = 4'b1110;
+                    1'b0: closestCore = 4'b1111;    
+    end
+
+endmodule 
+
+
+/*
+
+        [0  ,1]  \ 
+        [2  ,3]  /
+        [4  ,5]  \
+        [6  ,9]  /
+        [10,11]  \
+        [12,13]  /
+        [14,15] ==
+
+
+
+
+
+*/
