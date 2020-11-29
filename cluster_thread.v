@@ -15,13 +15,7 @@ module cluster_thread(input clk,reset,group,input [23:0] pixelIn, output  [71:0]
             redAcc <= redAcc + pixelIn[23:16];
             greenAcc <= greenAcc + pixelIn[15:8]; 
             blueAcc <= blueAcc + pixelIn[7:0];
-            counter <= counter + 1; 
-        end
-        else begin
-            redAcc <= redAcc + 0;
-            greenAcc <= greenAcc + 0; 
-            blueAcc <= blueAcc + 0;
-            counter <= counter + 0; 
+            counter <= counter + 1'b1; 
         end
     end
 endmodule 
