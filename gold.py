@@ -8,8 +8,9 @@ def cluster(r,g,b):
     closest = 0
     for i in range(len(cores)):
         if mmin > distance(cores[i][0],r,g,b):
-            mmin = cores[i][0] 
+            mmin = distance(cores[i][0],r,g,b)
             closest = i
+
 
 
     cores[closest][1] += r
@@ -46,11 +47,6 @@ cores = [
 im = Image.open("C:\\Users\\atom\\Documents\\COE405\\Project\\sample_1.png")
 im = im.convert("RGB")
 x,y = im.size
-print(x,y)
-print(im.getpixel((0,0)))
-print(im.getpixel((1,0)))
-print(im.getpixel((2,0)))
-
 #print((lambda x: "{0} {1} {2}".format(hex(x[0]),hex(x[1]),hex(x[2]))) (im.getpixel((,0))))
 
 for yi in range(y):
