@@ -1,7 +1,8 @@
-module cluster_engine #(parameter T=16)(input clk, reset , input [23:0] pixelIn,input[16*24-1:0] meanIn,input [15:0] enabled, output [(72*T)-1:0] accumolator,output [(12*T)-1:0] counters);
+module cluster_engine #(parameter T=16)(input clk, reset ,validIn, input [23:0] pixelIn,input[16*24-1:0] meanIn,input [15:0] enabled, output [(72*T)-1:0] accumolator,output [(12*T)-1:0] counters);
 
 reg [23:0] pixel0,pixel1;
 reg [15:0] closest;
+reg valid;
 wire [(10*T)-1:0] distance;
 //wire [(12*T)-1:0] pixelCounter;
 wire [15:0] nearest_mean;
@@ -27,7 +28,7 @@ generate
     end 
 endgenerate
 
-		  distance_comparator cmp(distance,enabled,nearest_mean);
+distance_comparator cmp(distance,enabled,nearest_mean);
 
 
 
@@ -36,14 +37,17 @@ always @(posedge clk, posedge reset) begin
     if(reset) begin
         pixel0 <= 0;
         pixel1 <= 0;
-		  closest <= 0;
+		closest <= 0;
+        valid <= 0;
+        
     end
-	 else begin
+	else begin
 	 
-    pixel0 <= pixelIn;
-    closest <= nearest_mean;
-    pixel1 <= pixel0;
-	 end
+        pixel0 <= pixelIn;
+        closest <= nearest_mean & {16{valid}};
+        pixel1 <= pixel0;
+        valid <= validIn;
+	end
 
 end
 
