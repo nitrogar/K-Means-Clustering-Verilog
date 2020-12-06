@@ -3,11 +3,14 @@ module bengine#(parameter T=16)(input clk , reset,valid,endOfImage,input [23:0] 
 reg ab,e0valid,e1valid;
 reg e0valid , e1valid;
 reg [1:0] state;
-reg  [11:0] addra,[11:0] addrb;
+reg  [11:0] fillA,[11:0] fillB;
 reg  [11:0] memcount_0 , [11:0] memcount_1;
 wire wea,web;
 wire [23:0] douta, [23:0] doutb;
+wire [11:0] addra, addrb;
 
+assign addra = state == write ? fillA : memcount_0;
+assign addrb = state == write ? fillB : memcount_1;
 
 
 assign wea = ~ab;
@@ -42,8 +45,8 @@ localparam  write   = 2'b00,
 always @(posedge clk) begin 
     if(reset) begin
         ab <= 0; 
-        addra <= {12{1'b0}};
-        addrb <= {12{1'b0}}
+        fillA <= {12{1'b0}};
+        fillB <= {12{1'b0}}
         memcount_0 <= {12{1'b0}};
         memcount_1 <= {12{1'b0}}
     end
@@ -51,20 +54,20 @@ always @(posedge clk) begin
         case(state):
         write: begin
             if(valid) begin
-                addra <= addra + ~ab;
-                addrb <= addrb + ab;
+                fillA <= fillA + ~ab;
+                fillB <= fillB + ab;
                 ab <= ~ab;                
             end
             if(endOfImage) state <= compute;
 
         compute: begin
-            if(memcount_0 <= addra) begin 
+            if(memcount_0 <= fillA) begin 
                 memcount_0 <= memcount_0 + 1'b1;
                 e0valid <= 1'b1;
             end
             else e0valid <= 1'b0;
 
-            if(memcount_1 <= addrb) begin 
+            if(memcount_1 <= fillB) begin 
                 memcount_1 <= memcount_1 + 1'b1;
                 e1valid <= 1'b1;
             end
@@ -75,5 +78,6 @@ always @(posedge clk) begin
 
         end
         /* done: just wait for reset*/
+        
 end
 endmodule
