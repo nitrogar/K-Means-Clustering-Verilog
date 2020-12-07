@@ -1,12 +1,11 @@
 module bengine#(parameter T=16)(input clk , reset,valid,endOfImage,input [23:0] pixelIn, input[16*24-1:0] meanIn,input [15:0] enabled, output [(72*T*2)-1:0] accumolator,output [(12*T*2)-1:0] counters);
 
 reg ab,e0valid,e1valid;
-reg e0valid , e1valid;
 reg [1:0] state;
-reg  [11:0] fillA,[11:0] fillB;
-reg  [11:0] memcount_0 , [11:0] memcount_1;
+reg  [11:0] fillA, fillB;
+reg  [11:0] memcount_0 , memcount_1;
 wire wea,web;
-wire [23:0] douta, [23:0] doutb;
+wire [23:0] douta, doutb;
 wire [11:0] addra, addrb;
 
 assign addra = state == write ? fillA : memcount_0;
@@ -34,8 +33,8 @@ mb your_instance_name (
 );
 
 
-cluster_engine #(T=16) E1( clk, reset , e0valid ,douta,meanIn,  enabled, ac0 , c0);
-cluster_engine #(T=16) E2( clk, reset , e1valid ,doutb,meanIn,  enabled, ac1 , c1);
+cluster_engine #(.T(16)) E1( clk, reset , e0valid ,douta,meanIn,  enabled, ac0 , c0);
+cluster_engine #(.T(16)) E2( clk, reset , e1valid ,doutb,meanIn,  enabled, ac1 , c1);
 
 
 localparam  write   = 2'b00,
@@ -46,12 +45,12 @@ always @(posedge clk) begin
     if(reset) begin
         ab <= 0; 
         fillA <= {12{1'b0}};
-        fillB <= {12{1'b0}}
+        fillB <= {12{1'b0}};
         memcount_0 <= {12{1'b0}};
-        memcount_1 <= {12{1'b0}}
+        memcount_1 <= {12{1'b0}};
     end
     else
-        case(state):
+        case(state)
         write: begin
             if(valid) begin
                 fillA <= fillA + ~ab;
@@ -59,7 +58,7 @@ always @(posedge clk) begin
                 ab <= ~ab;                
             end
             if(endOfImage) state <= compute;
-
+        end
         compute: begin
             if(memcount_0 <= fillA) begin 
                 memcount_0 <= memcount_0 + 1'b1;
@@ -78,6 +77,7 @@ always @(posedge clk) begin
 
         end
         /* done: just wait for reset*/
-        
+        endcase
+
 end
 endmodule
