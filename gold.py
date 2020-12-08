@@ -17,6 +17,9 @@ def cluster(r,g,b):
     cores[closest][2] += g
     cores[closest][3] += b
     cores[closest][4] += 1
+    
+    #if [hex(r),hex(g),hex(b)] not in cores[closest][5]:
+    cores[closest][5].append([hex(r),hex(g),hex(b)])
 
 
     
@@ -27,35 +30,38 @@ def distance(x,r,g,b):
 
 
 cores = [
-    [0,0,0,0,0], 
-    [16,0,0,0,0],
-    [32,0,0,0,0],
-    [48,0,0,0,0],
-    [64,0,0,0,0],
-    [80,0,0,0,0],
-    [96,0,0,0,0],
-    [112,0,0,0,0],
-    [128,0,0,0,0],
-    [144,0,0,0,0],
-    [160,0,0,0,0],
-    [176,0,0,0,0],
-    [192,0,0,0,0],
-    [208,0,0,0,0],
-    [224,0,0,0,0],
-    [255,0,0,0,0]
+    [0,0,0,0,0 , []], 
+    [16,0,0,0,0, []],
+    [32,0,0,0,0, []],
+    [48,0,0,0,0, []],
+    [64,0,0,0,0, []],
+    [80,0,0,0,0, []],
+    [96,0,0,0,0, []],
+    [112,0,0,0,0, []],
+    [128,0,0,0,0, []],
+    [144,0,0,0,0, []],
+    [160,0,0,0,0, []],
+    [176,0,0,0,0, []],
+    [192,0,0,0,0, []],
+    [208,0,0,0,0, []],
+    [224,0,0,0,0, []],
+    [255,0,0,0,0, []]
     ]
-im = Image.open("C:\\Users\\atom\\Documents\\COE405\\Project\\sample_1.png")
-im = im.convert("RGB")
-x,y = im.size
-#print((lambda x: "{0} {1} {2}".format(hex(x[0]),hex(x[1]),hex(x[2]))) (im.getpixel((,0))))
+f = open("./sample_1.rgb","rb")
+arr = bytearray(3)
 
-for yi in range(y):
-    for xi in range(x):
-        #print((xi,yi))
-        r,g,b = im.getpixel((xi,yi))
-        cluster(r,g,b)
+arr = f.read(3)
+while arr :
+    cluster(arr[0],arr[1],arr[2])
+    arr = f.read(3)
 
 
 
-for m,r,g,b,c in cores:
-    print("Core {0}    Red:{1}    Green:{2}    Blue:{3}    Count:{4}".format(m,r,g,b,c))
+
+
+
+
+
+for m,r,g,b,c,v in cores:
+    for x in v:
+        print("# the closeset to {0} is {1} #".format(''.join([format(int(c, 16), '02x') for c in x]),''.join([format(int(b, 16), '02x') for b in [hex(m),hex(m),hex(m)] ])))

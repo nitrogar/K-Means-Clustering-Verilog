@@ -1,25 +1,30 @@
-module distance_comparator(input [16*10-1:0]d,input[15:0]en ,output reg [15:0] closestCore);
+module distance_comparator(input [16*11-1:0]d,input[15:0]en ,output reg [15:0] closestCore);
     
     wire  A0,A1,A2,A3,A4,A5,A6,A7,B0,B1,B2,B3,C0,C1,D0;
     wire [16:0] DA01,DA23,DA45,DA67,DA89,DA1011,DA1213,DA1415,DB0,DB1,DB2,DB3,DC0,DC1;
 	 
-    assign A0 = {~en[0], d[9:0]   }  <=  {~en[1]   ,d[19:10]  };
-    assign A1 = {~en[2], d[30:20] }  <=  {~en[3]   ,d[39:30]  };
-    assign A2 = {~en[4], d[49:40] }  <=  {~en[5]   ,d[59:50]  };
-    assign A3 = {~en[6], d[69:60] }  <=  {~en[7]   ,d[79:70]  };
-    assign A4 = {~en[8], d[89:80] }  <=  {~en[9]   ,d[99:90]  };
-    assign A5 = {~en[10],d[109:100]} <=  {~en[11] ,d[119:110]};
-    assign A6 = {~en[12],d[129:120]} <=  {~en[13] ,d[139:130]};
-    assign A7 = {~en[14],d[149:140]} <=  {~en[15] ,d[159:150]};
-     
-    assign DA01   = A0 ? d[9:0]     :d[19:10]  ;
-    assign DA23   = A1 ? d[30:20]   :d[39:30]  ;
-    assign DA45   = A2 ? d[49:40]   :d[59:50]  ;
-    assign DA67   = A3 ? d[69:60]   :d[79:70]  ;
-    assign DA89   = A4 ? d[89:80]   :d[99:90]  ;
-    assign DA1011 = A5 ? d[109:100] :d[119:110];
-    assign DA1213 = A6 ? d[129:120] :d[139:130];
-    assign DA1415 = A7 ? d[149:140] :d[159:150];
+    assign A0 = {~en[0], d[11 *0 +:11]   }  <=  {~en[1]  ,d[11 *1 +:11]};
+    assign A1 = {~en[2], d[11 *2 +:11] }  <=  {~en[3]    ,d[11 *3 +:11]};
+    assign A2 = {~en[4], d[11 *4 +:11] }  <=  {~en[5]    ,d[11 *5 +:11]};
+    assign A3 = {~en[6], d[11 *6 +:11] }  <=  {~en[7]    ,d[11 *7 +:11]};
+    assign A4 = {~en[8], d[11 *8 +:11] }  <=  {~en[9]    ,d[11 *9 +:11]};
+    assign A5 = {~en[10],d[11 *10 +:11]} <=  {~en[11]    ,d[11 *11 +:11]};
+    assign A6 = {~en[12],d[11 *12 +:11]} <=  {~en[13]    ,d[11 *13 +:11]};
+    assign A7 = {~en[14],d[11 *14 +:11]} <=  {~en[15]    ,d[11 *15 +:11]};
+
+
+
+
+
+
+    assign DA01   = A0 ? d[11 *0 +:11]  :d[11 *1 +:11];
+    assign DA23   = A1 ? d[11 *2 +:11]  :d[11 *3 +:11];
+    assign DA45   = A2 ? d[11 *4 +:11]  :d[11 *5 +:11];
+    assign DA67   = A3 ? d[11 *6 +:11]  :d[11 *7 +:11];
+    assign DA89   = A4 ? d[11 *8 +:11]  :d[11 *9 +:11];
+    assign DA1011 = A5 ? d[11 *10 +:11] :d[11 *11 +:11];
+    assign DA1213 = A6 ? d[11 *12 +:11] :d[11 *13 +:11];
+    assign DA1415 = A7 ? d[11 *14 +:11] :d[11 *15 +:11];
     
     
     assign B0 = DA01   <= DA23;

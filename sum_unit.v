@@ -6,7 +6,9 @@ module sum_unit#(parameter SizeOfAcc=24,SizeOfCount=12,NumOfEngines=2)(
     output [SizeOfAcc + NumOfEngines - 1 : 0] red_sum,
     output [SizeOfAcc + NumOfEngines - 1 : 0] green_sum,
     output [SizeOfAcc + NumOfEngines - 1 : 0] blue_sum,
-    output [SizeOfCount + NumOfEngines - 1 : 0] co_sum
+    output [SizeOfCount + NumOfEngines - 1 : 0] co_sum,
+    output reg done
+
 
 );
 
@@ -18,7 +20,6 @@ reg [SizeOfAcc + NumOfEngines- 1 : 0] blue_pipeline [2*NumOfEngines - 1 : 1];   
 reg [SizeOfCount + NumOfEngines- 1 : 0] counter_pipeline [2*NumOfEngines - 1 : 1];   // Pipeline array
 reg [clog2(NumOfEngines)+1:0] stage;
 
-reg done = 0;
 assign red_sum = red_pipeline[1];
 assign green_sum = green_pipeline[1];
 assign blue_sum = blue_pipeline[1];

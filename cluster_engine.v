@@ -3,7 +3,7 @@ module cluster_engine #(parameter T=16)(input clk, reset ,validIn, input [23:0] 
 reg [23:0] pixel0,pixel1;
 reg [15:0] closest;
 reg valid;
-wire [(10*T)-1:0] distance;
+wire [(11*T)-1:0] distance;
 //wire [(12*T)-1:0] pixelCounter;
 wire [15:0] nearest_mean;
 // for debugging
@@ -17,14 +17,13 @@ wire [11:0] c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15;
 assign {c15,c14,c13,c12,c11,c10,c9,c8,c7,c6,c5,c4,c3,c2,c1,c0} = counters;
 
 
-
-
 // end for debugging
 genvar i;
 generate
     for (i=0; i<T; i=i+1) begin : generate_block_identifier // <-- example block name
-        manhattan funct( 1'b1,pixel0, meanIn[i*24 +:24],distance[i*10 +:10]);
-        cluster_thread thread (clk, reset, closest[i],  pixel1, accumolator[i*72 +:72],counters[i*12 +:12]);
+        manhattan funct( 1'b1,pixel0, meanIn[i*24 +:24],distance[i*11 +:11]);
+        cluster_thread thread (clk, reset, closest[i],pixel1,  meanIn[i*24 +:24]  , accumolator[i*72 +:72],counters[i*12 +:12]);
+		  
     end 
 endgenerate
 
@@ -47,6 +46,7 @@ always @(posedge clk, posedge reset) begin
         closest <= nearest_mean & {16{valid}};
         pixel1 <= pixel0;
         valid <= validIn;
+		  
 	end
 
 end
