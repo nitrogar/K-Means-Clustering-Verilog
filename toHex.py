@@ -1,5 +1,5 @@
-f = open("sample_1.rgb","rb")
-o = open("sample_1.hex","w")
+f = open("mauritius_beach.rgb","rb")
+o = open("mauritius_beach.hex","w")
 b = f.read(1)
 space = 1
 while b :
